@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  grafana:
+    image: grafana/grafana-enterprise:9.0.5
+    ports:
+      - 3000:3000
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - DB_INTERNAL_HOST
+      - DB_PORT
+      - DB_NAME
+      - READONLY_USER
+      - READONLY_PASSWORD
+    volumes:
+      - ./local/grafana/provisioning:/etc/grafana/provisioning
+      - ./local/grafana/config.ini:/etc/grafana/config.ini
+    networks:
+      - data-analysis
+  timescale:
+    image: timescale/timescaledb-ha:pg14-latest
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    environment:
+      - POSTGRES_USER=${ADMIN_USER}
+      - POSTGRES_PASSWORD=${ADMIN_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - data-analysis
+  timescale-migrations:
+    depends_on:
+      - timescale
+    image: flyway/flyway:9.10.2
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://timescale:${DB_PORT}/${DB_NAME}
+      - FLYWAY_USER=${ADMIN_USER}
+      - FLYWAY_PASSWORD=${ADMIN_PASSWORD}
+      - FLYWAY_PLACEHOLDERS_PROCESSORUSER=${PROCESSOR_USER}
+      - FLYWAY_PLACEHOLDERS_PROCESSORPASSWORD=${PROCESSOR_PASSWORD}
+      - FLYWAY_PLACEHOLDERS_READONLYUSER=${READONLY_USER}
+      - FLYWAY_PLACEHOLDERS_READONLYPASSWORD=${READONLY_PASSWORD}
+    volumes:
+      - ./sql:/flyway/sql
+    command: migrate
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+    networks:
+      - data-analysis
+networks:
+  data-analysis:
