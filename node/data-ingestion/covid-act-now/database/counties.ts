@@ -8,13 +8,23 @@ export async function saveCounties(counties: County[]) {
   await upsert({ table: "counties", items: counties, keyFields: ["id"] });
 }
 
-export async function getCountyByName(state: string, name: string): Promise<County | null> {
+type HasCountyId = { id: string };
+type HasStateAndName = {
+  state: string;
+  name: string;
+};
+type CountyLookup = HasStateAndName | HasCountyId;
+
+export async function getCountyByName(filterCriteria: CountyLookup): Promise<County | null> {
   await initializeConnection();
+  const filter =
+    "id" in filterCriteria
+      ? sql`where id=${filterCriteria.id}`
+      : sql`where state=${filterCriteria.state} and county = ${filterCriteria.name}`;
   const results = await sql`
     select id, fips, county, state, country, level, latitude, longitude
     from counties
-    where state=${state}
-    and county = ${name}
+    ${filter}
   `;
   return results.length ? (results[0] as County) : null;
 }

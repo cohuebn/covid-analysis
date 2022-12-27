@@ -1,5 +1,6 @@
 import { generateCounty } from "../test-data/data-generators";
 import { disconnectFromPostgres, waitForTable } from "../test-utilities";
+import { generate, randomItem } from "../../../common/data-generator";
 
 import { initializeConnection } from "./postgresdb";
 import { getCountyByName, saveCounties } from "./counties";
@@ -22,7 +23,17 @@ describe("counties queries", () => {
     await saveCounties([county, generateCounty()]);
     const updatedCounty = { ...county, state: "VT" };
     await saveCounties([updatedCounty]);
-    const result = await getCountyByName("VT", countyName);
+    const result = await getCountyByName({ state: "VT", name: countyName });
     expect(result?.state).toBe("VT");
+  });
+
+  it("should be able to lookup by name or id", async () => {
+    const counties = generate(3, generateCounty);
+    const expected = randomItem(counties);
+    const { county: countyName, state, id } = expected;
+    await saveCounties(counties);
+    const byNameLookup = await getCountyByName({ state, name: countyName });
+    const byIdLookup = await getCountyByName({ id });
+    expect(byNameLookup).toEqual(byIdLookup);
   });
 });
