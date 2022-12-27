@@ -1,4 +1,5 @@
-import { parseISO } from "date-fns";
+import { parseISO, min, max } from "date-fns";
+import unique from "just-unique";
 
 import { isNotNullOrUndefined } from "../../common/is-not-null-or-undefined";
 
@@ -46,16 +47,19 @@ function getPopulatedTimeseriesMetrics(
 
 function getMetrics(item: HistoricalCountyResponse): CountyMetric[] {
   const countyId = item.locationId;
-  const populationMetric: CountyMetric = {
-    countyId,
-    metricName: "population",
-    time: new Date(),
-    val: item.population,
-  };
   const timeSeriesMetrics = item.metricsTimeseries.flatMap((timeseriesDatapoint) =>
     getPopulatedTimeseriesMetrics(countyId, timeseriesDatapoint)
   );
-  return [populationMetric, ...timeSeriesMetrics];
+  const metricTimes = timeSeriesMetrics.map((x) => x.time);
+  const populationMetrics = [min(metricTimes), max(metricTimes)].map((time) => {
+    return {
+      countyId,
+      metricName: "population",
+      time,
+      val: item.population,
+    };
+  });
+  return unique([...timeSeriesMetrics, ...populationMetrics]);
 }
 
 type ParsedCountyMetrics = {

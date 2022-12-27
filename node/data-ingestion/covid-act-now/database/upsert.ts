@@ -1,13 +1,16 @@
 import unique from "just-unique";
 
 import { UpsertableItem } from "../types";
+
 import { initializeConnection, sql } from "./postgresdb";
+import { snakeCaseProperties } from "./property-transforms";
 
 export type UpsertSettings = {
   table: string;
   items: UpsertableItem[];
   keyFields: string[];
   fieldsExcludedOnUpdate?: string[];
+  snakeCaseItems?: boolean;
 };
 
 /**
@@ -31,19 +34,23 @@ export async function upsert(upsertSettings: UpsertSettings) {
   if (!items.length) {
     return;
   }
+  const normalizedItems =
+    upsertSettings.snakeCaseItems !== false ? snakeCaseProperties(items) : items;
   await initializeConnection();
   // 'unsafe' SQL methods used to simplify code, but using safe quote to prevent SQL injection
   const conflictDetectionColumns = sql.unsafe(keyFields.map((key) => safeQuote(key)).join(", "));
   const fieldsExcludedOnUpdate = unique(
     keyFields.concat(upsertSettings.fieldsExcludedOnUpdate ?? [])
   );
-  const updateKeys = Object.keys(items[0]).filter((key) => !fieldsExcludedOnUpdate?.includes(key));
+  const updateKeys = Object.keys(normalizedItems[0]).filter(
+    (key) => !fieldsExcludedOnUpdate?.includes(key)
+  );
   const updateSql = sql.unsafe(
     updateKeys.map((key) => `${safeQuote(key)} = excluded.${safeQuote(key)}`).join(",")
   );
   await sql`
     insert into ${sql(table)}
-      ${sql(items)}
+      ${sql(normalizedItems)}
       on conflict(${conflictDetectionColumns})
       do update set ${updateSql};
   `;

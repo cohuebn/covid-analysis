@@ -30,7 +30,10 @@ function getDefaultConnectionSettings() {
       timezone: "UTC",
     },
     idle_timeout: 3, // Don't hold connections so long
-    transform: { undefined: null },
+    transform: {
+      ...postgres.camel,
+      undefined: null,
+    },
     debug: (...args: unknown[]) => logger.trace(args, "Query trace"),
     types: {
       // TODO - figure out how to hook this into upserts

@@ -1,4 +1,4 @@
-import { parseISO, isSameDay } from "date-fns";
+import { parseISO, isSameDay, startOfDay, compareAsc } from "date-fns";
 
 import { parseHistoricalCountyResponse } from "./parse-historical-county-response";
 import exampleCountyData from "./test-data/county-metrics.json";
@@ -20,11 +20,16 @@ describe("parseHistoricalCountyResponse", () => {
 
   it("should parse population metric", () => {
     const result = parseHistoricalCountyResponse(as<HistoricalCountyResponse[]>(exampleCountyData));
-    const adamsCountyPopulation = result.metrics.find(
+    const adamsCountyPopulation = result.metrics.filter(
       (metric) =>
         metric.metricName === "population" && metric.countyId === "iso1:us#iso2:us-il#fips:17001"
     );
-    expect(adamsCountyPopulation?.val).toBe(65435);
+    expect(adamsCountyPopulation).toHaveLength(2);
+    const sortedPopulations = [...adamsCountyPopulation].sort((a, b) => compareAsc(a.time, b.time));
+    expect(startOfDay(sortedPopulations[0].time)).toEqual(startOfDay(parseISO("2020-03-06")));
+    expect(adamsCountyPopulation[0].val).toBe(65435);
+    expect(startOfDay(sortedPopulations[1].time)).toEqual(startOfDay(parseISO("2020-03-08")));
+    expect(adamsCountyPopulation[1].val).toBe(65435);
   });
 
   it("should parse time-based metrics", () => {
