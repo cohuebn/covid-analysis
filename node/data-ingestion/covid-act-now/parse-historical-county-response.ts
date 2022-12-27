@@ -12,7 +12,8 @@ function getCounty(item: HistoricalCountyResponse): County {
     state: item.state,
     country: item.country,
     level: item.level,
-    latLong: item.lat && item.long ? { latitude: item.lat, longitude: item.long } : null,
+    latitude: item.lat,
+    longitude: item.long,
   };
 }
 

@@ -1,3 +1,8 @@
+import { JSONValue, Serializable } from "postgres";
+
+export type UpsertableValue = Serializable | JSONValue;
+export type UpsertableItem = Record<string, UpsertableValue>;
+
 type BaseCounty = {
   fips: string;
   country: string;
@@ -23,5 +28,8 @@ export type Point = {
 
 export type County = BaseCounty & {
   id: string;
-  latLong: Point | null;
+  latitude: number | null;
+  longitude: number | null;
+  // TODO - figure out how to upsert points
+  // latLong: Point | null;
 };

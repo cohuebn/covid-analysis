@@ -1,4 +1,4 @@
-import { getOptional, getRequired } from "@common/env";
+import { getOptional, getRequired } from "../../common/env";
 
 export const config = {
   get actNowUrl() {

@@ -3,10 +3,10 @@ import path from "node:path";
 import fetch from "node-fetch";
 import unique from "just-unique";
 
+import { createLogger } from "../../common/logger";
+
 import { config } from "./config";
 import { HistoricalCountyResponse } from "./types";
-
-import { createLogger } from "@common/logger";
 
 const logger = createLogger(path.basename(__filename));
 

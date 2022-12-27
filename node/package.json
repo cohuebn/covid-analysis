@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts ${PROJECT:-./}",
     "test": "LOG_LEVEL=${LOG_LEVEL:-silent} jest ${PROJECT:-./}",
-    "test:watch": "LOG_LEVEL=${LOG_LEVEL:-silent} jest --watch ${PROJECT:-./}"
+    "test:watch": "LOG_LEVEL=${LOG_LEVEL:-silent} jest --watch ${PROJECT:-./}",
+    "test:integration": "LOG_LEVEL=${LOG_LEVEL:-warn} ./integration-tests-runner.sh"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,7 @@
   },
   "homepage": "https://github.com/cohuebn/covid-analysis#readme",
   "devDependencies": {
+    "@types/async-retry": "^1.4.5",
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.18",
     "@types/node-fetch": "^2.6.0",
@@ -63,6 +65,7 @@
     "node-fetch": "^2.6.7",
     "pino": "^8.8.0",
     "pino-pretty": "^9.1.1",
-    "postgres": "^3.3.2"
+    "postgres": "^3.3.2",
+    "random-words": "^1.2.0"
   }
 }
