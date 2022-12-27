@@ -1,4 +1,13 @@
-import { County, HistoricalCountyResponse } from "./types";
+import { parseISO } from "date-fns";
+
+import { isNotNullOrUndefined } from "../../common/is-not-null-or-undefined";
+
+import {
+  County,
+  CountyMetric,
+  HistoricalCountyResponse,
+  MetricsTimeseriesDatapoint,
+} from "./types";
 
 function removeCountySuffix(input: string) {
   return input.replace(/\s+county$/i, "");
@@ -17,8 +26,41 @@ function getCounty(item: HistoricalCountyResponse): County {
   };
 }
 
+function getPopulatedTimeseriesMetrics(
+  countyId: string,
+  dataPoint: MetricsTimeseriesDatapoint
+): CountyMetric[] {
+  return Object.entries(dataPoint).reduce<CountyMetric[]>((timeseriesMetrics, [key, value]) => {
+    if (key === "date" || typeof value !== "number" || !isNotNullOrUndefined(value)) {
+      return timeseriesMetrics;
+    }
+    const timeseriesMetric: CountyMetric = {
+      countyId,
+      metricName: key,
+      val: value as number,
+      time: parseISO(dataPoint.date),
+    };
+    return [...timeseriesMetrics, timeseriesMetric];
+  }, []);
+}
+
+function getMetrics(item: HistoricalCountyResponse): CountyMetric[] {
+  const countyId = item.locationId;
+  const populationMetric: CountyMetric = {
+    countyId,
+    metricName: "population",
+    time: new Date(),
+    val: item.population,
+  };
+  const timeSeriesMetrics = item.metricsTimeseries.flatMap((timeseriesDatapoint) =>
+    getPopulatedTimeseriesMetrics(countyId, timeseriesDatapoint)
+  );
+  return [populationMetric, ...timeSeriesMetrics];
+}
+
 type ParsedCountyMetrics = {
   counties: Record<string, County>;
+  metrics: CountyMetric[];
 };
 
 export function parseHistoricalCountyResponse(
@@ -31,5 +73,6 @@ export function parseHistoricalCountyResponse(
       [countyData.id]: countyData,
     };
   }, {});
-  return { counties };
+  const metrics = response.flatMap(getMetrics);
+  return { counties, metrics };
 }

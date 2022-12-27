@@ -11,6 +11,19 @@ type BaseCounty = {
   level: "county";
 };
 
+export type MetricsTimeseriesDatapoint = {
+  testPositivityRatio: number | null;
+  caseDensity: number | null;
+  weeklyNewCasesPer100k: number | null;
+  contactTracerCapacityRatio: number | null;
+  infectionRate: number | null;
+  infectionRateCI90: number | null;
+  icuCapacityRatio: number | null;
+  bedsWithCovidPatientsRatio: number | null;
+  weeklyCovidAdmissionsPer100k: number | null;
+  date: string;
+};
+
 export type HistoricalCountyResponse = BaseCounty & {
   locationId: string;
   lat: number | null;
@@ -19,6 +32,7 @@ export type HistoricalCountyResponse = BaseCounty & {
   hsa: string;
   hsaName: string;
   hsaPopulation: number;
+  metricsTimeseries: MetricsTimeseriesDatapoint[];
 };
 
 export type Point = {
@@ -32,4 +46,14 @@ export type County = BaseCounty & {
   longitude: number | null;
   // TODO - figure out how to upsert points
   // latLong: Point | null;
+};
+
+export type Metric = {
+  time: Date;
+  metricName: string;
+  val: number;
+};
+
+export type CountyMetric = Metric & {
+  countyId: string;
 };

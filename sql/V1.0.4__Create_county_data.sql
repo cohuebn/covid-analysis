@@ -16,7 +16,7 @@ create index if not exists ix_counties_county on counties (state, county);
 create table if not exists countyMetrics (
   countyId text not null,
   time timestamptz not null,
-  metric_name text not null,
+  metricName text not null,
   val numeric,
 
   primary key (countyId, time)
