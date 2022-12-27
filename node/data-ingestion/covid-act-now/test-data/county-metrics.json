@@ -1,0 +1,305 @@
+[
+  {
+    "fips": "17001",
+    "country": "US",
+    "state": "IL",
+    "county": "Adams County",
+    "hsa": "353",
+    "hsaName": "Adams, IL - Marion, MO",
+    "level": "county",
+    "lat": null,
+    "locationId": "iso1:us#iso2:us-il#fips:17001",
+    "long": null,
+    "population": 65435,
+    "hsaPopulation": 147913,
+    "metrics": {
+      "testPositivityRatio": 0.119,
+      "testPositivityRatioDetails": {
+        "source": "other"
+      },
+      "caseDensity": 38.2,
+      "weeklyNewCasesPer100k": 267.4,
+      "contactTracerCapacityRatio": null,
+      "infectionRate": 0.87,
+      "infectionRateCI90": 0.3,
+      "icuCapacityRatio": 0.67,
+      "bedsWithCovidPatientsRatio": 0.054,
+      "weeklyCovidAdmissionsPer100k": 25,
+      "vaccinationsInitiatedRatio": 0.582,
+      "vaccinationsCompletedRatio": 0.535,
+      "vaccinationsAdditionalDoseRatio": 0.257
+    },
+    "riskLevels": {
+      "overall": 3,
+      "testPositivityRatio": 2,
+      "caseDensity": 3,
+      "contactTracerCapacityRatio": 4,
+      "infectionRate": 0,
+      "icuCapacityRatio": 0
+    },
+    "cdcTransmissionLevel": 3,
+    "communityLevels": {
+      "cdcCommunityLevel": 2,
+      "canCommunityLevel": 2
+    },
+    "actuals": {
+      "cases": 27222,
+      "deaths": 257,
+      "positiveTests": null,
+      "negativeTests": null,
+      "contactTracers": null,
+      "hospitalBeds": {
+        "capacity": 327,
+        "currentUsageTotal": 255,
+        "currentUsageCovid": 19,
+        "weeklyCovidAdmissions": 28
+      },
+      "hsaHospitalBeds": {
+        "capacity": 448,
+        "currentUsageTotal": 360,
+        "currentUsageCovid": 23,
+        "weeklyCovidAdmissions": 28
+      },
+      "icuBeds": {
+        "capacity": 30,
+        "currentUsageTotal": 20,
+        "currentUsageCovid": 2
+      },
+      "hsaIcuBeds": {
+        "capacity": 42,
+        "currentUsageTotal": 30,
+        "currentUsageCovid": 2
+      },
+      "newCases": 0,
+      "newDeaths": 0,
+      "vaccinesDistributed": null,
+      "vaccinationsInitiated": 38056,
+      "vaccinationsCompleted": 34998,
+      "vaccinationsAdditionalDose": 16843,
+      "vaccinesAdministered": null,
+      "vaccinesAdministeredDemographics": null,
+      "vaccinationsInitiatedDemographics": {
+        "age": null,
+        "race": {
+          "ai_an": 49,
+          "asian": 338,
+          "black": 1249,
+          "middle_eastern_or_north_africa": 1,
+          "other": 369,
+          "pacific_islander": 29,
+          "unknown": 2275,
+          "white": 31533
+        },
+        "ethnicity": {
+          "hispanic": 504
+        },
+        "sex": null
+      }
+    },
+    "annotations": {
+      "cases": {
+        "sources": [
+          {
+            "type": "NYTimes",
+            "url": "https://github.com/nytimes/covid-19-data",
+            "name": "The New York Times"
+          }
+        ],
+        "anomalies": []
+      },
+      "deaths": {
+        "sources": [
+          {
+            "type": "NYTimes",
+            "url": "https://github.com/nytimes/covid-19-data",
+            "name": "The New York Times"
+          }
+        ],
+        "anomalies": []
+      },
+      "positiveTests": null,
+      "negativeTests": null,
+      "contactTracers": null,
+      "hospitalBeds": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://healthdata.gov/Hospital/COVID-19-Reported-Patient-Impact-and-Hospital-Capa/anag-cw7u",
+            "name": "Department of Health and Human Services"
+          }
+        ],
+        "anomalies": []
+      },
+      "hsaHospitalBeds": null,
+      "icuBeds": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://healthdata.gov/Hospital/COVID-19-Reported-Patient-Impact-and-Hospital-Capa/anag-cw7u",
+            "name": "Department of Health and Human Services"
+          }
+        ],
+        "anomalies": []
+      },
+      "hsaIcuBeds": null,
+      "newCases": null,
+      "newDeaths": null,
+      "vaccinesDistributed": null,
+      "vaccinationsInitiated": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-County/8xkx-amqh",
+            "name": "Centers for Disease Control and Prevention"
+          }
+        ],
+        "anomalies": []
+      },
+      "vaccinationsCompleted": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-County/8xkx-amqh",
+            "name": "Centers for Disease Control and Prevention"
+          }
+        ],
+        "anomalies": []
+      },
+      "vaccinationsAdditionalDose": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-County/8xkx-amqh",
+            "name": "Centers for Disease Control and Prevention"
+          }
+        ],
+        "anomalies": []
+      },
+      "vaccinesAdministered": null,
+      "testPositivityRatio": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://data.cdc.gov/Public-Health-Surveillance/Weekly-COVID-19-County-Level-of-Community-Transmis/dt66-w6m6/",
+            "name": "Centers for Disease Control and Prevention"
+          }
+        ],
+        "anomalies": []
+      },
+      "caseDensity": {
+        "sources": [
+          {
+            "type": "NYTimes",
+            "url": "https://github.com/nytimes/covid-19-data",
+            "name": "The New York Times"
+          }
+        ],
+        "anomalies": []
+      },
+      "weeklyNewCasesPer100k": {
+        "sources": [
+          {
+            "type": "NYTimes",
+            "url": "https://github.com/nytimes/covid-19-data",
+            "name": "The New York Times"
+          }
+        ],
+        "anomalies": []
+      },
+      "contactTracerCapacityRatio": null,
+      "infectionRate": {
+        "sources": [
+          {
+            "type": "NYTimes",
+            "url": "https://github.com/nytimes/covid-19-data",
+            "name": "The New York Times"
+          }
+        ],
+        "anomalies": []
+      },
+      "infectionRateCI90": {
+        "sources": [
+          {
+            "type": "NYTimes",
+            "url": "https://github.com/nytimes/covid-19-data",
+            "name": "The New York Times"
+          }
+        ],
+        "anomalies": []
+      },
+      "icuCapacityRatio": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://healthdata.gov/Hospital/COVID-19-Reported-Patient-Impact-and-Hospital-Capa/anag-cw7u",
+            "name": "Department of Health and Human Services"
+          }
+        ],
+        "anomalies": []
+      },
+      "bedsWithCovidPatientsRatio": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://healthdata.gov/Hospital/COVID-19-Reported-Patient-Impact-and-Hospital-Capa/anag-cw7u",
+            "name": "Department of Health and Human Services"
+          }
+        ],
+        "anomalies": []
+      },
+      "weeklyCovidAdmissionsPer100k": {
+        "sources": [
+          {
+            "type": "other",
+            "url": "https://healthdata.gov/Hospital/COVID-19-Reported-Patient-Impact-and-Hospital-Capa/anag-cw7u",
+            "name": "Department of Health and Human Services"
+          }
+        ],
+        "anomalies": []
+      },
+      "vaccinationsInitiatedRatio": null,
+      "vaccinationsCompletedRatio": null,
+      "vaccinationsAdditionalDoseRatio": null
+    },
+    "lastUpdatedDate": "2022-12-26",
+    "url": "https://covidactnow.org/us/illinois-il/county/adams_county",
+    "metricsTimeseries": [
+      {
+        "testPositivityRatio": 0,
+        "caseDensity": 0,
+        "weeklyNewCasesPer100k": 0,
+        "contactTracerCapacityRatio": null,
+        "infectionRate": null,
+        "infectionRateCI90": null,
+        "icuCapacityRatio": null,
+        "bedsWithCovidPatientsRatio": null,
+        "weeklyCovidAdmissionsPer100k": null,
+        "date": "2020-03-06"
+      },
+      {
+        "testPositivityRatio": 0,
+        "caseDensity": 0,
+        "weeklyNewCasesPer100k": 0,
+        "contactTracerCapacityRatio": null,
+        "infectionRate": null,
+        "infectionRateCI90": null,
+        "icuCapacityRatio": null,
+        "bedsWithCovidPatientsRatio": null,
+        "weeklyCovidAdmissionsPer100k": null,
+        "date": "2020-03-07"
+      },
+      {
+        "testPositivityRatio": 0,
+        "caseDensity": 0,
+        "weeklyNewCasesPer100k": 0,
+        "contactTracerCapacityRatio": null,
+        "infectionRate": null,
+        "infectionRateCI90": null,
+        "icuCapacityRatio": null,
+        "bedsWithCovidPatientsRatio": null,
+        "weeklyCovidAdmissionsPer100k": null,
+        "date": "2020-03-08"
+      }
+    ]
+  }
+]
