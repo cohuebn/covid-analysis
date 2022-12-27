@@ -15,7 +15,7 @@ type HasStateAndName = {
 };
 type CountyLookup = HasStateAndName | HasCountyId;
 
-export async function getCountyByName(filterCriteria: CountyLookup): Promise<County | null> {
+export async function getCounty(filterCriteria: CountyLookup): Promise<County | null> {
   await initializeConnection();
   const filter =
     "id" in filterCriteria

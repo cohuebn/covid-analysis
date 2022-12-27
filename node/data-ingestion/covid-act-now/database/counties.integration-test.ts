@@ -3,7 +3,7 @@ import { disconnectFromPostgres, waitForTable } from "../test-utilities";
 import { generate, randomItem } from "../../../common/data-generator";
 
 import { initializeConnection } from "./postgresdb";
-import { getCountyByName, saveCounties } from "./counties";
+import { getCounty, saveCounties } from "./counties";
 
 describe("counties queries", () => {
   const countiesTable = "counties";
@@ -23,7 +23,7 @@ describe("counties queries", () => {
     await saveCounties([county, generateCounty()]);
     const updatedCounty = { ...county, state: "VT" };
     await saveCounties([updatedCounty]);
-    const result = await getCountyByName({ state: "VT", name: countyName });
+    const result = await getCounty({ state: "VT", name: countyName });
     expect(result?.state).toBe("VT");
   });
 
@@ -32,8 +32,8 @@ describe("counties queries", () => {
     const expected = randomItem(counties);
     const { county: countyName, state, id } = expected;
     await saveCounties(counties);
-    const byNameLookup = await getCountyByName({ state, name: countyName });
-    const byIdLookup = await getCountyByName({ id });
+    const byNameLookup = await getCounty({ state, name: countyName });
+    const byIdLookup = await getCounty({ id });
     expect(byNameLookup).toEqual(byIdLookup);
   });
 });
