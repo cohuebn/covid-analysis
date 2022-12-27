@@ -25,6 +25,8 @@ services:
       - POSTGRES_USER=${ADMIN_USER}
       - POSTGRES_PASSWORD=${ADMIN_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ./.data:/home/postgres/pgdata/data
     networks:
       - data-analysis
   timescale-migrations:
