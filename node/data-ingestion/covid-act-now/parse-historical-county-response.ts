@@ -4,6 +4,7 @@ import unique from "just-unique";
 import { isNotNullOrUndefined } from "../../common/is-not-null-or-undefined";
 
 import {
+  ActualsTimeseriesDatapoint,
   County,
   CountyMetric,
   HistoricalCountyResponse,
@@ -29,7 +30,7 @@ function getCounty(item: HistoricalCountyResponse): County {
 
 function getPopulatedTimeseriesMetrics(
   countyId: string,
-  dataPoint: MetricsTimeseriesDatapoint
+  dataPoint: MetricsTimeseriesDatapoint | ActualsTimeseriesDatapoint
 ): CountyMetric[] {
   return Object.entries(dataPoint).reduce<CountyMetric[]>((timeseriesMetrics, [key, value]) => {
     if (key === "date" || typeof value !== "number" || !isNotNullOrUndefined(value)) {
@@ -47,10 +48,15 @@ function getPopulatedTimeseriesMetrics(
 
 function getMetrics(item: HistoricalCountyResponse): CountyMetric[] {
   const countyId = item.locationId;
-  const timeSeriesMetrics = item.metricsTimeseries.flatMap((timeseriesDatapoint) =>
+  const timeseriesMetrics = item.metricsTimeseries.flatMap((timeseriesDatapoint) =>
     getPopulatedTimeseriesMetrics(countyId, timeseriesDatapoint)
   );
-  const metricTimes = timeSeriesMetrics.map((x) => x.time);
+  const actualsTimeseriesMetrics = item.actualsTimeseries.flatMap((timeseriesDatapoint) =>
+    getPopulatedTimeseriesMetrics(countyId, timeseriesDatapoint)
+  );
+  const allTimeseriesMetrics = [...timeseriesMetrics, ...actualsTimeseriesMetrics];
+  // TODO - get actualsTimeseries data (e.g., deaths)
+  const metricTimes = allTimeseriesMetrics.map((x) => x.time);
   const populationMetrics = [min(metricTimes), max(metricTimes)].map((time) => {
     return {
       countyId,
@@ -59,7 +65,7 @@ function getMetrics(item: HistoricalCountyResponse): CountyMetric[] {
       val: item.population,
     };
   });
-  return unique([...timeSeriesMetrics, ...populationMetrics]);
+  return unique([...allTimeseriesMetrics, ...populationMetrics]);
 }
 
 type ParsedCountyMetrics = {

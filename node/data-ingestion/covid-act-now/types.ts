@@ -11,16 +11,28 @@ type BaseCounty = {
   level: "county";
 };
 
+type NullableNumber = number | null;
+
 export type MetricsTimeseriesDatapoint = {
-  testPositivityRatio: number | null;
-  caseDensity: number | null;
-  weeklyNewCasesPer100k: number | null;
-  contactTracerCapacityRatio: number | null;
-  infectionRate: number | null;
-  infectionRateCI90: number | null;
-  icuCapacityRatio: number | null;
-  bedsWithCovidPatientsRatio: number | null;
-  weeklyCovidAdmissionsPer100k: number | null;
+  testPositivityRatio: NullableNumber;
+  caseDensity: NullableNumber;
+  weeklyNewCasesPer100k: NullableNumber;
+  contactTracerCapacityRatio: NullableNumber;
+  infectionRate: NullableNumber;
+  infectionRateCI90: NullableNumber;
+  icuCapacityRatio: NullableNumber;
+  bedsWithCovidPatientsRatio: NullableNumber;
+  weeklyCovidAdmissionsPer100k: NullableNumber;
+  date: string;
+};
+
+export type ActualsTimeseriesDatapoint = {
+  cases: NullableNumber;
+  deaths: NullableNumber;
+  positiveTests: NullableNumber;
+  negativeTests: NullableNumber;
+  newCases: NullableNumber;
+  newDeaths: NullableNumber;
   date: string;
 };
 
@@ -33,6 +45,7 @@ export type HistoricalCountyResponse = BaseCounty & {
   hsaName: string;
   hsaPopulation: number;
   metricsTimeseries: MetricsTimeseriesDatapoint[];
+  actualsTimeseries: ActualsTimeseriesDatapoint[];
 };
 
 export type Point = {

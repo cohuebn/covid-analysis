@@ -28,7 +28,7 @@ describe("parseHistoricalCountyResponse", () => {
     const sortedPopulations = [...adamsCountyPopulation].sort((a, b) => compareAsc(a.time, b.time));
     expect(startOfDay(sortedPopulations[0].time)).toEqual(startOfDay(parseISO("2020-03-06")));
     expect(adamsCountyPopulation[0].val).toBe(65435);
-    expect(startOfDay(sortedPopulations[1].time)).toEqual(startOfDay(parseISO("2020-03-08")));
+    expect(startOfDay(sortedPopulations[1].time)).toEqual(startOfDay(parseISO("2022-12-23")));
     expect(adamsCountyPopulation[1].val).toBe(65435);
   });
 
@@ -51,5 +51,23 @@ describe("parseHistoricalCountyResponse", () => {
       (x) => x.metricName === "weeklyNewCasesPer100k"
     );
     expect(latestWeeklyNewCasesPer100k?.val).toBe(1);
+  });
+
+  it("should parse time-based actuals", () => {
+    const result = parseHistoricalCountyResponse(as<HistoricalCountyResponse[]>(exampleCountyData));
+    const latestAdamsCountyActuals = result.metrics.filter(
+      (metric) =>
+        metric.countyId === "iso1:us#iso2:us-il#fips:17001" &&
+        isSameDay(metric.time, parseISO("2022-12-23"))
+    );
+
+    const latestCases = latestAdamsCountyActuals.find((x) => x.metricName === "cases");
+    expect(latestCases?.val).toBe(1535);
+    const latestDeaths = latestAdamsCountyActuals.find((x) => x.metricName === "deaths");
+    expect(latestDeaths?.val).toBe(32);
+    const latestNewCases = latestAdamsCountyActuals.find((x) => x.metricName === "newCases");
+    expect(latestNewCases?.val).toBe(1);
+    const latestNewDeaths = latestAdamsCountyActuals.find((x) => x.metricName === "newDeaths");
+    expect(latestNewDeaths?.val).toBe(0);
   });
 });

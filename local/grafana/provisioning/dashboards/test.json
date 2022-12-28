@@ -1,0 +1,1303 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Number of new cases ",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'weeklyNewCasesPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'weeklyNewCasesPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Weekly new cases per 100,000",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Number of patients admitted to the hospital due to COVID per 100,000 people",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'weeklyCovidAdmissionsPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'weeklyCovidAdmissionsPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Weekly COVID admissions per 100,000",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Percentage of ICU beds currently in-use",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'icuCapacityRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'icuCapacityRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "ICU capacity %",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Percentage of hospital beds occupied by COVID patients",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'bedsWithCovidPatientsRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'bedsWithCovidPatientsRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Beds with COVID patients %",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "% of population with completed vaccinations (1st & second dose)",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'vaccinationsCompletedRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'vaccinationsCompletedRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Completed vaccination %",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Number of cumulative deaths resulting from COVID",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'deaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'deaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cumulative deaths",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Number of new deaths resulting from COVID",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 38
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "New deaths",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "A smoothed curve of number of new deaths resulting from COVID to identify trending",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 38
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n),\nsmoothed as (\n\tselect county, asap_smooth(time, val, 25) smoothedMetrics\n\tfrom allMetrics\n\tgroup by county\n)\nselect county, time, value\nfrom smoothed\ncross join unnest(smoothedMetrics)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "New deaths (smoothed)",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 0,
+        "y": 50
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with inRangePopulations as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'population'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangePopulation as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'population'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallPopulations as (\n  select county, time, metric_name, val\n  from inRangePopulations\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangePopulation\n)\nselect county, time, metric_name, val\nfrom allPopulations",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Populations",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Number of cumulative deaths resulting from COVID as a percentage of population",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 50
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with filteredCounties as (\n  select c.id, c.county, c.state\n  from counties c\n  where (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),inRangeMetrics as (\n  select\n    cm.county_id,\n    c.county,\n    time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join filteredCounties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'deaths'\n),\nfirstOutOfRangeMetrics as (\n  select\n    cm.county_id,\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join filteredCounties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'deaths'\n  group by cm.county_id, c.county, cm.metric_name\n),\nallMetrics as (\n  select county_id, county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county_id, county, time, metric_name, val\n  from firstOutOfRangeMetrics\n),\npopulation as (\n  select cm.county_id, last(cm.val, cm.time) as val\n  from county_metrics cm\n  join filteredCounties c on cm.county_id = c.id\n  where $__timeFilter(cm.time)\n  and cm.metric_name = 'population'\n  group by cm.county_id\n)\nselect m.county, m.time, m.metric_name, m.val / p.val as val\nfrom allMetrics m\njoin population p on m.county_id = p.county_id",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Cumulative COVID deaths as population %",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": ["Cook", "Madison", "Monroe", "St. Clair"],
+          "value": ["Cook", "Madison", "Monroe", "St. Clair"]
+        },
+        "datasource": {
+          "type": "postgres",
+          "uid": "P1895EB10309BCAB5"
+        },
+        "definition": "select distinct county as text, id as value from counties order by county",
+        "description": "Which county(s) to show results for",
+        "hide": 0,
+        "includeAll": true,
+        "label": "County(s)",
+        "multi": true,
+        "name": "county",
+        "options": [],
+        "query": "select distinct county as text, id as value from counties order by county",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3y",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Test",
+  "uid": "w5zSgtpVk",
+  "version": 11,
+  "weekStart": ""
+}

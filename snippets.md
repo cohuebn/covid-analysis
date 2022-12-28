@@ -24,6 +24,7 @@ with inRangePopulations as (
   join counties c on cm.county_id = c.id
   where $__timeFilter(time)
   and metric_name = 'population'
+  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))
 ),
 firstOutOfRangePopulation as (
   select
@@ -33,8 +34,9 @@ firstOutOfRangePopulation as (
     last(cm.val, cm.time) as val
   from county_metrics cm
   join counties c on cm.county_id = c.id
-  where time < '${__from:date:iso}'
+  where time < '${__from:date:iso:sqlstring}'
   and metric_name = 'population'
+  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))
   group by c.county, cm.metric_name
 ),
 allPopulations as (

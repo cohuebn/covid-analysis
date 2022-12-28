@@ -300,6 +300,81 @@
         "weeklyCovidAdmissionsPer100k": null,
         "date": "2020-03-08"
       }
+    ],
+    "actualsTimeseries": [
+      {
+        "cases": null,
+        "deaths": null,
+        "positiveTests": null,
+        "negativeTests": null,
+        "contactTracers": null,
+        "hospitalBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null,
+          "weeklyCovidAdmissions": null
+        },
+        "hsaHospitalBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null,
+          "weeklyCovidAdmissions": null
+        },
+        "icuBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null
+        },
+        "hsaIcuBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null
+        },
+        "newCases": null,
+        "newDeaths": null,
+        "vaccinesAdministeredDemographics": null,
+        "vaccinationsInitiatedDemographics": null,
+        "date": "2020-03-06"
+      },
+      {
+        "cases": 1535,
+        "deaths": 32,
+        "positiveTests": null,
+        "negativeTests": null,
+        "contactTracers": null,
+        "hospitalBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null,
+          "weeklyCovidAdmissions": null
+        },
+        "hsaHospitalBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null,
+          "weeklyCovidAdmissions": null
+        },
+        "icuBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null
+        },
+        "hsaIcuBeds": {
+          "capacity": null,
+          "currentUsageTotal": null,
+          "currentUsageCovid": null
+        },
+        "newCases": 1,
+        "newDeaths": 0,
+        "vaccinesDistributed": null,
+        "vaccinationsInitiated": null,
+        "vaccinationsCompleted": null,
+        "vaccinationsAdditionalDose": null,
+        "vaccinesAdministered": null,
+        "vaccinesAdministeredDemographics": null,
+        "vaccinationsInitiatedDemographics": null,
+        "date": "2022-12-23"
+      }
     ]
   }
 ]
