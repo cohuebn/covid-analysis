@@ -87,7 +87,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 13,
+        "h": 12,
         "w": 12,
         "x": 0,
         "y": 0
@@ -114,7 +114,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'weeklyNewCasesPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'weeklyNewCasesPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'weeklyNewCasesPer100k', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -210,7 +210,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 13,
+        "h": 12,
         "w": 12,
         "x": 12,
         "y": 0
@@ -237,7 +237,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'weeklyCovidAdmissionsPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'weeklyCovidAdmissionsPer100k'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'weeklyCovidAdmissionsPer100k', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -336,7 +336,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 12
       },
       "id": 6,
       "options": {
@@ -360,7 +360,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'icuCapacityRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'icuCapacityRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'icuCapacityRatio', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -459,7 +459,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 13
+        "y": 12
       },
       "id": 7,
       "options": {
@@ -483,7 +483,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'bedsWithCovidPatientsRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'bedsWithCovidPatientsRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'bedsWithCovidPatientsRatio', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -582,7 +582,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 24
+        "y": 23
       },
       "id": 5,
       "options": {
@@ -606,7 +606,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'vaccinationsCompletedRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'vaccinationsCompletedRatio'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'vaccinationsCompletedRatio', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -705,7 +705,7 @@
         "h": 14,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 23
       },
       "id": 9,
       "options": {
@@ -729,7 +729,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'deaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'deaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'deaths', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -828,7 +828,7 @@
         "h": 12,
         "w": 12,
         "x": 0,
-        "y": 38
+        "y": 37
       },
       "id": 8,
       "options": {
@@ -852,7 +852,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n)\nselect county, time, metric_name, val\nfrom allMetrics",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'newDeaths', '{${county:doublequote}}') as cm;",
           "refId": "A",
           "select": [
             [
@@ -951,7 +951,7 @@
         "h": 12,
         "w": 12,
         "x": 12,
-        "y": 38
+        "y": 37
       },
       "id": 10,
       "options": {
@@ -975,7 +975,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangeMetrics as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangeMetrics as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'newDeaths'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallMetrics as (\n  select county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangeMetrics\n),\nsmoothed as (\n\tselect county, asap_smooth(time, val, 25) smoothedMetrics\n\tfrom allMetrics\n\tgroup by county\n)\nselect county, time, value\nfrom smoothed\ncross join unnest(smoothedMetrics)",
+          "rawSql": "with allMetrics as (\n  select cm.county, cm.time, cm.val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'newDeaths', '{${county:doublequote}}') as cm\n),\nallMetricsSmoothed as (\n\tselect county, asap_smooth(time, val, 25) smoothedMetrics\n\tfrom allMetrics\n\tgroup by county\n)\nselect county, time, value\nfrom allMetricsSmoothed\ncross join unnest(smoothedMetrics);",
           "refId": "A",
           "select": [
             [
@@ -1073,7 +1073,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 50
+        "y": 49
       },
       "id": 2,
       "options": {
@@ -1097,7 +1097,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with inRangePopulations as (\n  select\n    c.county,\n    time_bucket_gapfill('1 week', time) as time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'population'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),\nfirstOutOfRangePopulation as (\n  select\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join counties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'population'\n  and (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n  group by c.county, cm.metric_name\n),\nallPopulations as (\n  select county, time, metric_name, val\n  from inRangePopulations\n  union\n  select county, time, metric_name, val\n  from firstOutOfRangePopulation\n)\nselect county, time, metric_name, val\nfrom allPopulations",
+          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'population', '{${county:doublequote}}') as cm",
           "refId": "A",
           "select": [
             [
@@ -1196,7 +1196,7 @@
         "h": 14,
         "w": 12,
         "x": 12,
-        "y": 50
+        "y": 49
       },
       "id": 11,
       "options": {
@@ -1220,7 +1220,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with filteredCounties as (\n  select c.id, c.county, c.state\n  from counties c\n  where (coalesce(${county:sqlstring}, '') = '' or county in (${county:sqlstring}))\n),inRangeMetrics as (\n  select\n    cm.county_id,\n    c.county,\n    time,\n    cm.metric_name,\n    cm.val\n  from county_metrics cm\n  join filteredCounties c on cm.county_id = c.id\n  where $__timeFilter(time)\n  and metric_name = 'deaths'\n),\nfirstOutOfRangeMetrics as (\n  select\n    cm.county_id,\n    c.county,\n    last(cm.time, cm.time) as time,\n    cm.metric_name,\n    last(cm.val, cm.time) as val\n  from county_metrics cm\n  join filteredCounties c on cm.county_id = c.id\n  where time < '${__from:date:iso:sqlstring}'\n  and metric_name = 'deaths'\n  group by cm.county_id, c.county, cm.metric_name\n),\nallMetrics as (\n  select county_id, county, time, metric_name, val\n  from inRangeMetrics\n  union\n  select county_id, county, time, metric_name, val\n  from firstOutOfRangeMetrics\n),\npopulation as (\n  select cm.county_id, last(cm.val, cm.time) as val\n  from county_metrics cm\n  join filteredCounties c on cm.county_id = c.id\n  where $__timeFilter(cm.time)\n  and cm.metric_name = 'population'\n  group by cm.county_id\n)\nselect m.county, m.time, m.metric_name, m.val / p.val as val\nfrom allMetrics m\njoin population p on m.county_id = p.county_id",
+          "rawSql": "with allMetrics as (\n  select county_id, county, time, metric_name, val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'deaths', '{${county:doublequote}}')\n),\npopulation as (\n  select cm.county_id, last(cm.val, cm.time) as val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'population', '{${county:doublequote}}') as cm\n  group by cm.county_id\n)\nselect m.county, m.time, m.metric_name, m.val / p.val as val\nfrom allMetrics m\njoin population p on m.county_id = p.county_id",
           "refId": "A",
           "select": [
             [
@@ -1266,14 +1266,18 @@
       {
         "current": {
           "selected": true,
-          "text": ["Cook", "Madison", "Monroe", "St. Clair"],
-          "value": ["Cook", "Madison", "Monroe", "St. Clair"]
+          "text": ["Adams - IL", "Alexander - IL", "Cook - IL"],
+          "value": [
+            "iso1:us#iso2:us-il#fips:17001",
+            "iso1:us#iso2:us-il#fips:17003",
+            "iso1:us#iso2:us-il#fips:17031"
+          ]
         },
         "datasource": {
           "type": "postgres",
           "uid": "P1895EB10309BCAB5"
         },
-        "definition": "select distinct county as text, id as value from counties order by county",
+        "definition": "select distinct (county || ' - ' || state || ':::' || id) county_selector from counties order by county_selector;",
         "description": "Which county(s) to show results for",
         "hide": 0,
         "includeAll": true,
@@ -1281,9 +1285,9 @@
         "multi": true,
         "name": "county",
         "options": [],
-        "query": "select distinct county as text, id as value from counties order by county",
+        "query": "select distinct (county || ' - ' || state || ':::' || id) county_selector from counties order by county_selector;",
         "refresh": 1,
-        "regex": "",
+        "regex": "/(?<text>.+):::(?<value>.+)/g",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
@@ -1298,6 +1302,6 @@
   "timezone": "",
   "title": "Test",
   "uid": "w5zSgtpVk",
-  "version": 11,
+  "version": 13,
   "weekStart": ""
 }
