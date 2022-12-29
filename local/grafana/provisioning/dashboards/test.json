@@ -525,252 +525,6 @@
         "type": "postgres",
         "uid": "P1895EB10309BCAB5"
       },
-      "description": "Number of new deaths resulting from COVID",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "log": 2,
-              "type": "log"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 0,
-        "y": 23
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P1895EB10309BCAB5"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "select cm.county, cm.time, cm.val\nfrom get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'newDeaths', '{${county:doublequote}}') as cm;",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "New deaths",
-      "transformations": [
-        {
-          "id": "prepareTimeSeries",
-          "options": {
-            "format": "many"
-          }
-        },
-        {
-          "id": "labelsToFields",
-          "options": {
-            "valueLabel": "county"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P1895EB10309BCAB5"
-      },
-      "description": "A smoothed curve of number of new deaths resulting from COVID to identify trending",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "log": 2,
-              "type": "log"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 12,
-        "y": 23
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "postgres",
-            "uid": "P1895EB10309BCAB5"
-          },
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "with allMetrics as (\n  select cm.county, cm.time, cm.val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'newDeaths', '{${county:doublequote}}') as cm\n),\nallMetricsSmoothed as (\n\tselect county, asap_smooth(time, val, 25) smoothedMetrics\n\tfrom allMetrics\n\tgroup by county\n)\nselect county, time, value\nfrom allMetricsSmoothed\ncross join unnest(smoothedMetrics);",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "New deaths (smoothed)",
-      "transformations": [
-        {
-          "id": "prepareTimeSeries",
-          "options": {
-            "format": "many"
-          }
-        },
-        {
-          "id": "labelsToFields",
-          "options": {
-            "valueLabel": "county"
-          }
-        }
-      ],
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "postgres",
-        "uid": "P1895EB10309BCAB5"
-      },
       "description": "% of population with first dosage of vaccination",
       "fieldConfig": {
         "defaults": {
@@ -828,7 +582,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 23
       },
       "id": 12,
       "options": {
@@ -951,7 +705,7 @@
         "h": 14,
         "w": 12,
         "x": 12,
-        "y": 35
+        "y": 23
       },
       "id": 11,
       "options": {
@@ -1074,7 +828,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 37
       },
       "id": 5,
       "options": {
@@ -1197,7 +951,7 @@
         "h": 14,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 37
       },
       "id": 9,
       "options": {
@@ -1263,6 +1017,7 @@
         "type": "postgres",
         "uid": "P1895EB10309BCAB5"
       },
+      "description": "The total population of each county",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1316,10 +1071,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 14,
+        "h": 12,
         "w": 12,
         "x": 0,
-        "y": 63
+        "y": 51
       },
       "id": 2,
       "options": {
@@ -1364,6 +1119,252 @@
         }
       ],
       "title": "Populations",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "A smoothed curve of number of new deaths resulting from COVID to identify trending",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 12,
+        "y": 51
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with allMetrics as (\n  select cm.county, cm.time, cm.val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'newDeaths', '{${county:doublequote}}') as cm\n),\nallMetricsSmoothed as (\n\tselect county, asap_smooth(time, val, 25) smoothedMetrics\n\tfrom allMetrics\n\tgroup by county\n)\nselect county, time, value\nfrom allMetricsSmoothed\ncross join unnest(smoothedMetrics);",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "New deaths (smoothed)",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "many"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "valueLabel": "county"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "P1895EB10309BCAB5"
+      },
+      "description": "Change in COVID deaths as a % of population. Useful for understanding if a change in something (e.g. vaccinations) impacts death rate",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 63
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "P1895EB10309BCAB5"
+          },
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "with allMetrics as (\n  select county_id, county, time, metric_name, val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'deaths', '{${county:doublequote}}')\n),\npopulation as (\n  select cm.county_id, last(cm.val, cm.time) as val\n  from get_county_metrics('${__from:date:iso}', '${__to:date:iso}', 'population', '{${county:doublequote}}') as cm\n  group by cm.county_id\n),\ndeathsAsPercentOfPopulation as (\n  select m.county, m.time, m.metric_name, m.val / p.val as val\n  from allMetrics m\n  join population p on m.county_id = p.county_id\n),\ndeathRateChange as (\n  select m.county, m.time, m.metric_name, m.val - lag(m.val) over w val\n  from deathsAsPercentOfPopulation m\n  window w as (partition by county order by time)\n),\ndeathRateChangeSmoothed as (\n\tselect county, asap_smooth(time, val, 25) smoothedMetrics\n\tfrom deathRateChange\n\tgroup by county\n)\nselect county, time, value\nfrom deathRateChangeSmoothed\ncross join unnest(smoothedMetrics);",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Change in cumulative COVID deaths as population %",
       "transformations": [
         {
           "id": "prepareTimeSeries",
@@ -1425,6 +1426,6 @@
   "timezone": "",
   "title": "Test",
   "uid": "w5zSgtpVk",
-  "version": 13,
+  "version": 14,
   "weekStart": ""
 }
