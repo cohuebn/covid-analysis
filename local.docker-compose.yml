@@ -1,19 +1,21 @@
 version: "3.9"
 services:
   grafana:
-    image: grafana/grafana-enterprise:9.3.2
+    image: grafana/grafana-oss:9.3.2
     ports:
       - 3000:3000
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_LOG_LEVEL=debug
       - DB_INTERNAL_HOST
       - DB_PORT
       - DB_NAME
       - READONLY_USER
       - READONLY_PASSWORD
     volumes:
-      - ./local/grafana/provisioning:/etc/grafana/provisioning
+      - ./local/grafana/provisioning/datasources/:/etc/grafana/provisioning/datasources/
+      - ./local/grafana/provisioning/dashboards/:/etc/grafana/provisioning/dashboards/
       - ./local/grafana/config.ini:/etc/grafana/config.ini
     networks:
       - data-analysis
