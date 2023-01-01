@@ -17,6 +17,6 @@
     "types": ["node", "jest"],
     "allowJs": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.js"],
   "exclude": ["node_modules"]
 }

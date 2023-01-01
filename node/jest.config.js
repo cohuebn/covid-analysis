@@ -1,14 +1,12 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
-module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "./tsconfig-tests.json",
-    },
+export const globals = {
+  "ts-jest": {
+    tsconfig: "./tsconfig-tests.json",
   },
-  testEnvironment: "node",
-  moduleFileExtensions: ["js", "ts"],
-  transform: {
-    "\\.ts$": "ts-jest",
-    "\\.js$": "babel-jest",
-  },
+};
+export const testEnvironment = "node";
+export const moduleFileExtensions = ["js", "ts"];
+export const transform = {
+  "\\.ts$": "ts-jest",
+  "\\.js$": "babel-jest",
 };

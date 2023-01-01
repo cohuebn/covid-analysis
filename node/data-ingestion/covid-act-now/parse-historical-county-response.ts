@@ -11,6 +11,8 @@ import {
   MetricsTimeseriesDatapoint,
 } from "./types";
 
+const source = "COVID Act Now";
+
 function removeCountySuffix(input: string) {
   return input.replace(/\s+county$/i, "");
 }
@@ -41,6 +43,7 @@ function getPopulatedTimeseriesMetrics(
       metricName: key,
       val: value as number,
       time: parseISO(dataPoint.date),
+      source,
     };
     return [...timeseriesMetrics, timeseriesMetric];
   }, []);
@@ -63,6 +66,7 @@ function getMetrics(item: HistoricalCountyResponse): CountyMetric[] {
       metricName: "population",
       time,
       val: item.population,
+      source,
     };
   });
   return unique([...allTimeseriesMetrics, ...populationMetrics]);

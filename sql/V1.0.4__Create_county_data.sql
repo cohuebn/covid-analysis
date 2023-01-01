@@ -18,6 +18,7 @@ create table if not exists county_metrics (
   metric_name text not null,
   time timestamptz not null,
   val numeric,
+  source text,
 
   primary key (county_id, metric_name, time)
 );

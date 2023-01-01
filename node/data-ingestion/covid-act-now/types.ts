@@ -65,6 +65,7 @@ export type Metric = {
   time: Date;
   metricName: string;
   val: number;
+  source: string;
 };
 
 export type CountyMetric = Metric & {
